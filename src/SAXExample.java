@@ -32,9 +32,7 @@ public class SAXExample {
         }
     }
 
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
     public boolean isCommandList() {
         return isCommandList;

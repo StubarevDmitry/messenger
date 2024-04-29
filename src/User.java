@@ -43,14 +43,16 @@ public class User {
             while (true) {
                 String userWord;
                 try {
-                    System.out.println("++");
                     userWord = reader.readLine();
                     System.out.println("++");
+                    userWord = XML_FileCreation.clientMessage(userWord, "123");
+                    System.out.println("++");
+
                     if (userWord.equals("stop")) {
                         out.write("stop" + "\n");
                         break;
                     } else {
-                        out.write(userWord + "\n");
+                        out.write(userWord);
                     }
                     out.flush(); // чистим
                 } catch (IOException e) {

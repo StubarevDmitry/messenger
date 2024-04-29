@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
-        //System.out.println("Hello world!");
+        System.out.println("Hello world!");
 //        new SAXExample("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 //                "<company>\n" +
 //                "    <name>IT-Heaven</name>\n" +
@@ -46,18 +46,18 @@ public class main {
 //                "        </office>\n" +
 //                "    </offices>\n" +
 //                "</company>");
-        new SAXExample("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<command name=\"message\" >\n" +
-                "<message>mmmmmmmmmmmmmmmmmmm</message>\n" +
-                "<session>UNIQUE_SESSION_ID</session>\n" +
-                "</command>");
-        //Scanner in = new Scanner(System.in);
-//        if(Objects.equals(in.nextLine(), "S")){
-//            new Server();
-//        }
-//        else{
-//            new User();
-//        }
+//        new SAXExample("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//                "<command name=\"message\" >\n" +
+//                "<message>mmmmmmmmmmmmmmmmmmm</message>\n" +
+//                "<session>UNIQUE_SESSION_ID</session>\n" +
+//                "</command>");
+        Scanner in = new Scanner(System.in);
+        if(Objects.equals(in.nextLine(), "S")){
+            new Server();
+        }
+        else{
+            new User();
+        }
         //if(Objects.equals(in.nextLine(), "U"))
         //}
     }

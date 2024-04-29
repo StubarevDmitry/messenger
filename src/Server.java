@@ -23,15 +23,20 @@ public class Server {
         public void run() {
             String word;
             try {
-
                 while (true) {
                     word = in.readLine();
-                    System.out.println(word);
-                    SAXExample parser = new SAXExample(word);
-                    if(parser.isCommandMessage()){
-                        System.out.println(parser.getMessage());
-                        System.out.println(parser.getSession());
+                    int N = Integer.valueOf(word);
+                    word = "";
+                    for (int i = 0; i < N; i++) {
+                        word = word + in.readLine() + "\n";
                     }
+                    //System.out.print(word);
+                    //System.out.println(word);
+                    SAXExample parser = new SAXExample(word);
+//                    if(parser.isCommandMessage()){
+//                        System.out.println(parser.getMessage());
+//                        System.out.println(parser.getSession());
+//                    }
                     if(word.equals("stop")) {
                         break;
                     }
