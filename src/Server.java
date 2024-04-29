@@ -1,3 +1,6 @@
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,6 +27,11 @@ public class Server {
                 while (true) {
                     word = in.readLine();
                     System.out.println(word);
+                    SAXExample parser = new SAXExample(word);
+                    if(parser.isCommandMessage()){
+                        System.out.println(parser.getMessage());
+                        System.out.println(parser.getSession());
+                    }
                     if(word.equals("stop")) {
                         break;
                     }
@@ -34,6 +42,10 @@ public class Server {
                 in.close();
                 out.close();
             } catch (IOException ignored) {
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
+                throw new RuntimeException(e);
             }
         }
         private void send(String msg) {
@@ -48,11 +60,11 @@ public class Server {
         try {
             ServerSocket server = new ServerSocket(4004);
             System.out.println("Сервер запущен!");
-            //in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            //out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            allConnections = new Vector<>();
             while(true){
                 Socket socket = server.accept();
                 System.out.println("канект произведён");
+                //assert allConnections != null;
                 allConnections.add(new InteractionWithClients(socket));
             }
         } catch (IOException e) {

@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class User {
@@ -10,11 +8,16 @@ public class User {
     private static BufferedWriter out;
 
     User() throws IOException {
+        System.out.println("пользователь запущен!");
         clientSocket = new Socket("localhost", 4004);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         ReadMsg read = new ReadMsg();
-        read.run();
+        read.start();
+        System.out.println("+");
         WriteMsg write = new WriteMsg();
-        write.run();
+        write.start();
     }
     private class ReadMsg extends Thread {
         @Override
@@ -40,7 +43,9 @@ public class User {
             while (true) {
                 String userWord;
                 try {
+                    System.out.println("++");
                     userWord = reader.readLine();
+                    System.out.println("++");
                     if (userWord.equals("stop")) {
                         out.write("stop" + "\n");
                         break;
