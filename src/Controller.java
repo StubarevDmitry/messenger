@@ -11,6 +11,7 @@ public class Controller {
         String msg = "";
         while (true){
             String newMsg = screen.getMessage();
+            screen.printMsg();
             if(!newMsg.equals(msg)){
                 msg = newMsg;
                 user.sendMsg(msg);

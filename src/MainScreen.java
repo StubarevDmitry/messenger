@@ -2,18 +2,29 @@ import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class MainScreen {
     private JFrame win;
     private JTextField tf3;
     private JLabel lbl1;
     private JButton btn1, btn2;
+
+    private JTextArea ta;
+    private JScrollPane sp;
     private String message = "";
     public String getMessage(){
         return message;
     }
     MainScreen(String name, String status) {
         win = new JFrame("user");
+
+        ta = new JTextArea(10, 15);
+        sp = new JScrollPane(ta);
+        sp.setBounds(10,45,395,170);
+        win.add(sp);
 
         tf3 = new JTextField();
 
@@ -44,5 +55,16 @@ public class MainScreen {
         win.setSize(430, 280);
         win.setLayout(null);
         win.setVisible(true);
+    }
+    public void printMsg() throws FileNotFoundException {
+        ta.setText("");
+        File file = new File("C:\\Users\\stuba\\IdeaProjects\\messenger\\src\\ messagesToUser.txt");
+        Scanner scan = new Scanner(file);
+        while (scan.hasNextLine()) {
+            String[] words = scan.nextLine().split("--");
+            ta.append(words[0] +": "+ words[1] + "\n");
+            //int i = scan.nextInt();
+        }
+        ta.append("");
     }
 }
