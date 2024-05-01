@@ -7,9 +7,11 @@ import java.net.Socket;
 import java.util.Vector;
 
 public class Server {
-    private Vector<InteractionWithClients> allConnections;
+    private final Vector<InteractionWithClients> allConnections;
 
     private class InteractionWithClients extends Thread{
+        private String userName = "Dima";
+        private String type = "Dima";
         public BufferedReader in;
         public BufferedWriter out;
         public  Socket clientSocket;
@@ -21,35 +23,42 @@ public class Server {
         }
         @Override
         public void run() {
-            String word;
+            StringBuilder word;
             try {
-                while (true) {
-                    word = in.readLine();
-                    int N = Integer.valueOf(word);
-                    word = "";
+                do {
+                    word = new StringBuilder(in.readLine());// ждёт команды
+
+                    //оборобатывает команду
+                    int N = Integer.parseInt(word.toString());
+                    word = new StringBuilder();
                     for (int i = 0; i < N; i++) {
-                        word = word + in.readLine() + "\n";
+                        word.append(in.readLine()).append("\n");
                     }
-                    //System.out.print(word);
-                    //System.out.println(word);
-                    SAXExample parser = new SAXExample(word);
-//                    if(parser.isCommandMessage()){
-//                        System.out.println(parser.getMessage());
-//                        System.out.println(parser.getSession());
-//                    }
-                    if(word.equals("stop")) {
-                        break;
+                    SAXparser parser = new SAXparser(word.toString());
+                    //
+
+                    if (parser.isCommandLogin()) {
+                        System.out.println("пользователь с ником " + parser.getName() + " и типом " + parser.getType());
+                        userName = parser.getName();
+                        type = parser.getType();
+                        word = new StringBuilder(XML_FileCreation.serverUserLoginMessage(userName));
+                        for (InteractionWithClients vr : allConnections) {
+                            vr.send(word.toString()); // отослать сообщение о входе клиента всем остальным
+                        }
                     }
-                    for (InteractionWithClients vr : allConnections) {
-                        vr.send(word); // отослать принятое сообщение с привязанного клиента всем остальным включая его
+
+                    if (parser.isCommandMessage()) {
+                        word = new StringBuilder(XML_FileCreation.serverMessage(parser.getMessage(), userName));
+                        for (InteractionWithClients vr : allConnections) {
+                            vr.send(word.toString()); // отослать принятое сообщение с привязанного клиента всем остальным включая его
+                        }
                     }
-                }
+
+                } while (!word.toString().equals("stop"));
                 in.close();
                 out.close();
             } catch (IOException ignored) {
-            } catch (ParserConfigurationException e) {
-                throw new RuntimeException(e);
-            } catch (SAXException e) {
+            } catch (ParserConfigurationException | SAXException e) {
                 throw new RuntimeException(e);
             }
         }

@@ -1,13 +1,24 @@
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.Socket;
 
 public class User {
-    private Socket clientSocket;
-    private static BufferedReader reader;
-    private static BufferedReader in;
-    private static BufferedWriter out;
+    boolean isExist = true;
+    private final Socket clientSocket;
+    private final BufferedReader reader;
+    private final BufferedReader in;
+    private final BufferedWriter out;
 
-    User() throws IOException {
+    private final String name;
+    private final String type;
+    //public Object addActionListener;
+    boolean isConnect = false;
+
+    User(String name, String type) throws IOException {
+        this.name = name;
+        this.type = type;
         System.out.println("пользователь запущен!");
         clientSocket = new Socket("localhost", 4004);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -15,49 +26,81 @@ public class User {
         out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         ReadMsg read = new ReadMsg();
         read.start();
-        System.out.println("+");
-        WriteMsg write = new WriteMsg();
-        write.start();
+        loginMsg();
+        //System.out.println("+");
+        //WriteMsg write = new WriteMsg();
+        //write.start();
+    }
+    public void sendMsg(String msg) throws IOException {
+        String userWord = msg;
+        //userWord = reader.readLine();
+        userWord = XML_FileCreation.clientMessage(userWord, "123");
+        if (userWord.equals("stop")) {
+            out.write("stop" + "\n");
+        } else {
+            out.write(userWord);
+        }
+        out.flush();
     }
     private class ReadMsg extends Thread {
         @Override
         public void run() {
 
-            String str;
+            StringBuilder str;
             try {
-                while (true) {
-                    str = in.readLine();
-                    if (str.equals("stop")) {
-                        break;
+                do {
+                    str = new StringBuilder(in.readLine());
+                    int N = Integer.parseInt(str.toString());
+                    str = new StringBuilder();
+                    for (int i = 0; i < N; i++) {
+                        str.append(in.readLine()).append("\n");
                     }
-                }
-            } catch (IOException e) {
+                    //System.out.print(str);
+                    SAXparser parser = new SAXparser(str.toString());
+                    if(parser.isCommandMessage()){
+                        System.out.println(parser.getName() + ": " + parser.getMessage());
+                    }
+                    if(parser.isCommandLogin()){
+                        System.out.println(parser.getName() + " зашел в чат");
+                    }
+                } while (!str.toString().equals("stop"));
+            } catch (IOException ignored) {
 
+            } catch (ParserConfigurationException | SAXException e) {
+                throw new RuntimeException(e);
             }
         }
     }
-
+    public void loginMsg() throws IOException {
+        String str = XML_FileCreation.clientLoginMessage(name, type);
+        out.write(str);
+        out.flush(); // чистим
+    }
     public class WriteMsg extends Thread {
         @Override
         public void run() {
             while (true) {
                 String userWord;
                 try {
-                    userWord = reader.readLine();
-                    System.out.println("++");
-                    userWord = XML_FileCreation.clientMessage(userWord, "123");
-                    System.out.println("++");
+                    if(!isConnect){
+                        //sleep(3000);
+                        String str = XML_FileCreation.clientLoginMessage(name, type);
+                        out.write(str);
+                        isConnect = true;
+                    }
+                    else {
 
-                    if (userWord.equals("stop")) {
-                        out.write("stop" + "\n");
-                        break;
-                    } else {
-                        out.write(userWord);
+                        userWord = reader.readLine();
+                        userWord = XML_FileCreation.clientMessage(userWord, "123");
+                        if (userWord.equals("stop")) {
+                            out.write("stop" + "\n");
+                            break;
+                        } else {
+                            out.write(userWord);
+                        }
                     }
                     out.flush(); // чистим
-                } catch (IOException e) {
-
-                }
+                } catch (IOException e) {}
 
             }
         }
