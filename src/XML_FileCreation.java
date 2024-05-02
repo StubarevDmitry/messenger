@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class XML_FileCreation {
     static String clientMessage(String message, String session){
         String word = "5\n" +
@@ -28,7 +30,7 @@ public class XML_FileCreation {
         word.deleteCharAt(word.length() - 1);
         return word.toString();
     }
-    static String serverUserLoginMessage(String name){
+    static String serverToUserLoginMessage(String name){
         StringBuilder word = new StringBuilder("4\n" +
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<event name=\"userlogin\" >\n" +
@@ -37,11 +39,26 @@ public class XML_FileCreation {
         word.deleteCharAt(word.length() - 1);
         return word.toString();
     }
+    static String serverToUserListMessage(Vector<String[]> vector){
+
+        StringBuilder word = new StringBuilder("4\n" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<success >\n" +
+                "<listusers >\n");
+        for (int i = 0; i < vector.size(); i++){
+            word.append("<name>").append(vector.get(i)[0]).append("</name>\n").append("<type>").append(vector.get(i)[1]).append("</type>\n");
+        }
+        //word.append("<name>").append(name).append("</name>\n").append("<type>").append(name).append("</type>\n");
+        word.append("</listusers>\n" + "</success>\n");
+        word.deleteCharAt(word.length() - 1);
+        return word.toString();
+    }
     static String success(String message, String name){
-        String word = "4\n" +
+        String word = "3\n" +
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<success>\n" +
                 "</success>\n";
         return word;
     }
+
 }

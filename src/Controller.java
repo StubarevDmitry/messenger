@@ -11,10 +11,13 @@ public class Controller {
         String msg = "";
         while (true){
             String newMsg = screen.getMessage();
-            screen.printMsg();
             if(!newMsg.equals(msg)){
                 msg = newMsg;
                 user.sendMsg(msg);
+            }
+            if(user.isNewMassage()){
+                screen.printMsg(user.getMassage());
+                user.TurnIsNewMassage();
             }
             sleep(500);
         }

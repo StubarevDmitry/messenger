@@ -11,11 +11,22 @@ public class User {
     private final BufferedReader in;
     private final BufferedWriter out;
 
+    private String massage = "";
+    private boolean isNewMassage = false;
     private final String name;
     private final String type;
     //public Object addActionListener;
     boolean isConnect = false;
 
+    public String getMassage(){
+        return massage;
+    }
+    public boolean isNewMassage(){
+        return isNewMassage;
+    }
+    public void TurnIsNewMassage(){
+        isNewMassage = !isNewMassage;
+    }
     User(String name, String type) throws IOException {
         this.name = name;
         this.type = type;
@@ -57,11 +68,17 @@ public class User {
                     }
                     //System.out.print(str);
                     SAXparser parser = new SAXparser(str.toString());
+                    //if(parser.isCommandLogin())
                     if(parser.isCommandMessage()){
                         System.out.println(parser.getName() + ": " + parser.getMessage());
+                        massage = parser.getName() + ": " + parser.getMessage();
+                        isNewMassage = true;
+
                     }
                     if(parser.isCommandLogin()){
                         System.out.println(parser.getName() + " зашел в чат");
+                        massage = "                                       " + parser.getName() + " зашел в чат";
+                        isNewMassage = true;
                     }
                 } while (!str.toString().equals("stop"));
             } catch (IOException ignored) {

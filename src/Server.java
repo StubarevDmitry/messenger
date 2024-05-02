@@ -15,6 +15,12 @@ public class Server {
         public BufferedReader in;
         public BufferedWriter out;
         public  Socket clientSocket;
+        public String getUserName(){
+            return userName;
+        }
+        public String getType(){
+            return type;
+        }
         InteractionWithClients(Socket clientSocket) throws IOException {
             this.clientSocket = clientSocket;
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -23,42 +29,60 @@ public class Server {
         }
         @Override
         public void run() {
-            StringBuilder word;
+            StringBuilder msg;
             try {
                 do {
-                    word = new StringBuilder(in.readLine());// ждёт команды
+                    msg = new StringBuilder(in.readLine());// ждёт команды
 
                     //оборобатывает команду
-                    int N = Integer.parseInt(word.toString());
-                    word = new StringBuilder();
+                    int N = Integer.parseInt(msg.toString());
+                    msg = new StringBuilder();
                     for (int i = 0; i < N; i++) {
-                        word.append(in.readLine()).append("\n");
+                        msg.append(in.readLine()).append("\n");
                     }
-                    SAXparser parser = new SAXparser(word.toString());
+                    SAXparser parser = new SAXparser(msg.toString());
                     //
+
+                    if(parser.isCommandList()){
+                        Vector<String[]> vector = new Vector<>();
+                        for (InteractionWithClients vr : allConnections) {
+                            String[] str = new String[2];
+                            str[0] = vr.getUserName();
+                            str[1] = vr.getType();
+                            vector.add(str);
+                        }
+                        msg = new StringBuilder(XML_FileCreation.serverToUserListMessage(vector));
+                        send(msg.toString());
+                    }
 
                     if (parser.isCommandLogin()) {
                         System.out.println("пользователь с ником " + parser.getName() + " и типом " + parser.getType());
                         userName = parser.getName();
                         type = parser.getType();
-                        word = new StringBuilder(XML_FileCreation.serverUserLoginMessage(userName));
+                        msg = new StringBuilder(XML_FileCreation.serverToUserLoginMessage(userName));
                         for (InteractionWithClients vr : allConnections) {
-                            vr.send(word.toString()); // отослать сообщение о входе клиента всем остальным
+                            vr.send(msg.toString()); // отослать сообщение о входе клиента всем остальным
                         }
                     }
 
                     if (parser.isCommandMessage()) {
-                        word = new StringBuilder(XML_FileCreation.serverMessage(parser.getMessage(), userName));
+                        msg = new StringBuilder(XML_FileCreation.serverMessage(parser.getMessage(), userName));
                         for (InteractionWithClients vr : allConnections) {
-                            vr.send(word.toString()); // отослать принятое сообщение с привязанного клиента всем остальным включая его
+                            vr.send(msg.toString()); // отослать принятое сообщение с привязанного клиента всем остальным включая его
                         }
                     }
 
-                } while (!word.toString().equals("stop"));
+                } while (!msg.toString().equals("stop"));
                 in.close();
                 out.close();
             } catch (IOException ignored) {
             } catch (ParserConfigurationException | SAXException e) {
+                try {
+                    in.close();
+                    out.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 throw new RuntimeException(e);
             }
         }

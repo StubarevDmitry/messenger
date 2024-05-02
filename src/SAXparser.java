@@ -54,6 +54,9 @@ public class SAXparser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             lastElementName = qName;
             //if(lastElementName.equals(""))
+            if (lastElementName.equals("listusers")){
+                isCommandList = true;
+            }
             if (lastElementName.equals("command")){
                 isCommand = true;
                 String name = attributes.getValue("name");

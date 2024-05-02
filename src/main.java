@@ -12,13 +12,9 @@ public class main {
             new Server();
         }
         else{
-            //String name = in.nextLine();
-            //String type = in.nextLine();
-            //HorizontalVisibilityTest test = new HorizontalVisibilityTest();
-            //test.main(args);
-            //HorizontalVisibilityTest test = new HorizontalVisibilityTest();
-            //test.main(args);
-            new Controller("name", "type");
+            String name = in.nextLine();
+            String type = in.nextLine();
+            new Controller(name, type);
             //user.connect(name, type);
         }
         //new MainScreen();

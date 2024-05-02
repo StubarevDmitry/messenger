@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class MainScreen {
     private JFrame win;
@@ -22,6 +23,7 @@ public class MainScreen {
         win = new JFrame("user");
 
         ta = new JTextArea(10, 15);
+        ta.isFocusable();
         sp = new JScrollPane(ta);
         sp.setBounds(10,45,395,170);
         win.add(sp);
@@ -56,15 +58,16 @@ public class MainScreen {
         win.setLayout(null);
         win.setVisible(true);
     }
-    public void printMsg() throws FileNotFoundException {
-        ta.setText("");
-        File file = new File("C:\\Users\\stuba\\IdeaProjects\\messenger\\src\\ messagesToUser.txt");
-        Scanner scan = new Scanner(file);
-        while (scan.hasNextLine()) {
-            String[] words = scan.nextLine().split("--");
-            ta.append(words[0] +": "+ words[1] + "\n");
-            //int i = scan.nextInt();
-        }
-        ta.append("");
+    public void printMsg(String message) throws FileNotFoundException {
+        ta.append(message + "\n");
+        //ta.setText("");
+//        File file = new File("C:\\Users\\stuba\\IdeaProjects\\messenger\\src\\ messagesToUser.txt");
+//        Scanner scan = new Scanner(file);
+//        while (scan.hasNextLine()) {
+//            String[] words = scan.nextLine().split("--");
+//            ta.append(words[0] +": "+ words[1] + "\n");
+//            //int i = scan.nextInt();
+//        }
+//        ta.append("");
     }
 }
