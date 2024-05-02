@@ -16,8 +16,9 @@ public class Controller {
                 user.sendMsg(msg);
             }
             if(user.isNewMassage()){
-                screen.printMsg(user.getMassage());
+                //screen.printMsg(user.getMassage());
                 user.TurnIsNewMassage();
+                user.ListMsg();
             }
             sleep(500);
         }

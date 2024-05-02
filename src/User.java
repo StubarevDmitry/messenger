@@ -3,6 +3,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.net.Socket;
+import java.util.Vector;
 
 public class User {
     boolean isExist = true;
@@ -15,7 +16,7 @@ public class User {
     private boolean isNewMassage = false;
     private final String name;
     private final String type;
-    //public Object addActionListener;
+    private Vector<String[]> userList;
     boolean isConnect = false;
 
     public String getMassage(){
@@ -68,13 +69,18 @@ public class User {
                     }
                     //System.out.print(str);
                     SAXparser parser = new SAXparser(str.toString());
-                    //if(parser.isCommandLogin())
+                    if(parser.isCommandList()){
+                        userList = parser.vector;
+                        //System.out.println(userList.get(0)[0] + ": " + userList.get(0)[1]);
+                    }
+
                     if(parser.isCommandMessage()){
                         System.out.println(parser.getName() + ": " + parser.getMessage());
                         massage = parser.getName() + ": " + parser.getMessage();
                         isNewMassage = true;
 
                     }
+
                     if(parser.isCommandLogin()){
                         System.out.println(parser.getName() + " зашел в чат");
                         massage = "                                       " + parser.getName() + " зашел в чат";
@@ -90,6 +96,12 @@ public class User {
     }
     public void loginMsg() throws IOException {
         String str = XML_FileCreation.clientLoginMessage(name, type);
+        out.write(str);
+        out.flush(); // чистим
+    }
+
+    public void ListMsg() throws IOException {
+        String str = XML_FileCreation.clientListMessage();
         out.write(str);
         out.flush(); // чистим
     }

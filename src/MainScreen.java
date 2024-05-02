@@ -60,14 +60,5 @@ public class MainScreen {
     }
     public void printMsg(String message) throws FileNotFoundException {
         ta.append(message + "\n");
-        //ta.setText("");
-//        File file = new File("C:\\Users\\stuba\\IdeaProjects\\messenger\\src\\ messagesToUser.txt");
-//        Scanner scan = new Scanner(file);
-//        while (scan.hasNextLine()) {
-//            String[] words = scan.nextLine().split("--");
-//            ta.append(words[0] +": "+ words[1] + "\n");
-//            //int i = scan.nextInt();
-//        }
-//        ta.append("");
     }
 }

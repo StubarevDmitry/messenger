@@ -8,12 +8,13 @@ import javax.xml.parsers.SAXParserFactory;
 //import java.io.File;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
+import java.util.Vector;
 //import java.util.ArrayList;
 
 public class SAXparser {
     private String  message, session, name, type;
-    private boolean isCommandLogin,isCommandList, isCommandMessage, isCommand, isEvent;
-
+    private boolean isCommandLogin,isCommandList, isCommandMessage, isCommand, isEvent, isNewUser;
+    public Vector<String[]> vector = new Vector<>();
     public SAXparser(String arg) throws ParserConfigurationException, SAXException, IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
@@ -54,8 +55,9 @@ public class SAXparser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             lastElementName = qName;
             //if(lastElementName.equals(""))
-            if (lastElementName.equals("listusers")){
+            if (lastElementName.equals("User")){
                 isCommandList = true;
+                isNewUser = true;
             }
             if (lastElementName.equals("command")){
                 isCommand = true;
@@ -89,6 +91,12 @@ public class SAXparser {
         public void characters(char[] ch, int start, int length) throws SAXException {
             String information = new String(ch, start, length);
             information = information.replace("\n", "").trim();
+            if (isNewUser) {
+                if (!information.isEmpty()) {
+                    if (lastElementName.equals("name")) name = information;
+                    if (lastElementName.equals("type")) type = information;
+                }
+            }
             if(isCommand) {
                 if (isCommandMessage) {
                     if (!information.isEmpty()) {
@@ -132,6 +140,12 @@ public class SAXparser {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             lastElementName = qName;
+            if(lastElementName.equals("User")){
+                String[] str = new String[2];
+                str[0] = name;
+                str[1] = type;
+                vector.add(str);
+            }
         }
     }
 }

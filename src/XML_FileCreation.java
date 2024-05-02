@@ -20,6 +20,14 @@ public class XML_FileCreation {
                 "</command>\n";
         return word;
     }
+    static String clientListMessage(){
+        String word = "3\n" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<command name=\"List\" >\n" +
+                //"<name>"+ name +"</name>\n" +
+                "</command>\n";
+        return word;
+    }
     static String serverMessage(String message, String name){
         StringBuilder word = new StringBuilder("5\n" +
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -40,15 +48,14 @@ public class XML_FileCreation {
         return word.toString();
     }
     static String serverToUserListMessage(Vector<String[]> vector){
-
-        StringBuilder word = new StringBuilder("4\n" +
+        int numberOfLines = vector.size() * 4 + 5;
+        StringBuilder word = new StringBuilder(String.valueOf(numberOfLines) + "\n"+
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<success >\n" +
                 "<listusers >\n");
         for (int i = 0; i < vector.size(); i++){
-            word.append("<name>").append(vector.get(i)[0]).append("</name>\n").append("<type>").append(vector.get(i)[1]).append("</type>\n");
+            word.append("<User>\n").append("<name>").append(vector.get(i)[0]).append("</name>\n").append("<type>").append(vector.get(i)[1]).append("</type>\n").append("</User>\n");
         }
-        //word.append("<name>").append(name).append("</name>\n").append("<type>").append(name).append("</type>\n");
         word.append("</listusers>\n" + "</success>\n");
         word.deleteCharAt(word.length() - 1);
         return word.toString();
