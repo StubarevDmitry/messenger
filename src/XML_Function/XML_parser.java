@@ -1,3 +1,5 @@
+package XML_Function;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -11,11 +13,11 @@ import java.io.StringBufferInputStream;
 import java.util.Vector;
 //import java.util.ArrayList;
 
-public class SAXparser {
+public class XML_parser {
     private String  message, session, name, type;
-    private boolean isCommandLogin,isCommandList, isCommandMessage, isCommand, isEvent, isNewUser;
+    private boolean isCommandLogin,isCommandList, isCommandMessage, isCommand, isEvent, isNewUser, isExit;
     public Vector<String[]> vector = new Vector<>();
-    public SAXparser(String arg) throws ParserConfigurationException, SAXException, IOException {
+    public XML_parser(String arg) throws ParserConfigurationException, SAXException, IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
 
@@ -49,13 +51,19 @@ public class SAXparser {
     public String getType() {
         return type;
     }
+    public boolean isExit(){
+        return isExit;
+    }
     private class AdvancedXMLHandler extends DefaultHandler {
         private String lastElementName;
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             lastElementName = qName;
             //if(lastElementName.equals(""))
-            if (lastElementName.equals("User")){
+            if (lastElementName.equals("exit")){
+                isExit = true;
+            }
+            if (lastElementName.equals("BusinessModel.User")){
                 isCommandList = true;
                 isNewUser = true;
             }
@@ -140,7 +148,7 @@ public class SAXparser {
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             lastElementName = qName;
-            if(lastElementName.equals("User")){
+            if(lastElementName.equals("BusinessModel.User")){
                 String[] str = new String[2];
                 str[0] = name;
                 str[1] = type;
