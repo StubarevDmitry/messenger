@@ -14,14 +14,19 @@ public class main {
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, InterruptedException {
         Scanner in = new Scanner(System.in);
-        if(Objects.equals(in.nextLine(), "S")){
-            new Server();
-        }
-        else{
-            String name = in.nextLine();
-            String type = in.nextLine();
-            new Controller(name, type);
-            //user.connect(name, type);
+        String typeOfInteraction = in.nextLine();
+        while(true) {
+            if (Objects.equals(typeOfInteraction, "S")) {
+                new Server();
+                break;
+            } else if (Objects.equals(typeOfInteraction, "U")) {
+                System.out.print("имя пользователя :");
+                String name = in.nextLine();
+                System.out.print("тип пользователя :");
+                String type = in.nextLine();
+                new Controller(name, type);
+                break;
+            }
         }
     }
 }
